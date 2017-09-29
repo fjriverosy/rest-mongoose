@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
-
+var json2xls = require('json2xls');
 var registers = require('./routes/registers');
 var app = express();
 var mongoDB= 'mongodb://localhost/RegMEF';
@@ -14,19 +14,6 @@ mongoose.connect(mongoDB);
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
-
-/**Consultas */
-//encontrar todos los registros de personas que se llaman Francisco Riveros Yantani, mostrar su rut y nombre
-// console.log (Register.find({'nombre':'Francisco Riveros Yantani'},'dni nombre', function(err, registers){
-//   if(err) return handleError(err);
-//   //registers contiene una lista de registros que cumplen con el criterio de busqueda aplicado
-// }))
-
-//Utilizando una query encontrar todos los registros con RUT 162406507
-// var query = Register.find({'dni':'16240650'});
-// query.select('dni nombre');
-// query.limit(5);//limita solo a 5 los registros.
-// query.sort({'nombre':-1});//ordena por nombre
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,10 +27,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.get('/registers', registers.showAll);
 app.get('/registers/name/:name', registers.showByName);
 app.get('/registers/dni/:dni', registers.showByDNI);
+app.get('/registers/exportdnixls/:dni', registers.exportdnixls);
+app.get('/registers/exportnamexls/:name',registers.exportnamexls);
+//app.get('/registers/exportxlsexample', registers.exportxls);
 
 
 // catch 404 and forward to error handler
