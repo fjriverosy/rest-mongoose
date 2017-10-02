@@ -29,7 +29,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/registers', registers.showAll);
 app.get('/registers/name/:name', registers.showByName);
+app.get('/registers/namelimited/:name', registers.showByNameLimited);
 app.get('/registers/dni/:dni', registers.showByDNI);
+app.get('/registers/dnilimited/:dni', registers.showByDNILimited);
 app.get('/registers/exportdnixls/:dni', registers.exportdnixls);
 app.get('/registers/exportnamexls/:name',registers.exportnamexls);
 //app.get('/registers/exportxlsexample', registers.exportxls);

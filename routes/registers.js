@@ -6,14 +6,14 @@ var bluebird = require('bluebird');
 
 //Mostrar Datos
 /************************************************ */
-//Mostrar todos
+//Mostrar todos (limitado a 100 primero registros)
 exports.showAll = function (req, res) {
 
     Register.find({}, function (err, register) {
         if (err) throw err;
         res.send(register);
         //console.log(register);
-    });
+    }).limit(100);
 };
 
 //Mostrar por Nombre
@@ -31,6 +31,21 @@ exports.showByName = function (req, res) {
         });
     //
 };
+//limitado a 5 resultados
+exports.showByNameLimited = function (req, res) {
+    console.log(req.params.name);
+    Register.find({
+            $text: {
+                $search: req.params.name
+            }
+        },
+        function (err, register) {
+            if (err) throw err;
+            res.send(register);
+            console.log(register);
+        }).limit(5);
+    //
+};
 
 //Mostrar por DNI
 exports.showByDNI = function (req, res) {
@@ -42,6 +57,17 @@ exports.showByDNI = function (req, res) {
         res.send(register);
         console.log(register);
     });
+};
+//limitado a 5 registros
+exports.showByDNILimited = function (req, res) {
+    console.log(req.params.dni);
+    Register.find({
+        "dni": req.params.dni
+    }, function (err, register) {
+        if (err) throw err;
+        res.send(register);
+        console.log(register);
+    }).limit(5);
 };
 
 //Exportar XLS por DNI
@@ -62,6 +88,7 @@ function findByRut(rut) {
         });
     });
 };
+
 //Exportar XLS por Nombre
 exports.exportnamexls = function (req, res) {
     findByName(req.params.name)
