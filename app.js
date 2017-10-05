@@ -8,6 +8,7 @@ var mongoose = require("mongoose");
 var json2xls = require('json2xls');
 var registers = require('./routes/registers');
 var app = express();
+var cors = require('cors');
 var mongoDB= 'mongodb://localhost/RegMEF';
 mongoose.connect(mongoDB);
 
@@ -18,7 +19,7 @@ db.on('error', console.error.bind(console,'MongoDB connection error:'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(cors());
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/registers', registers.showAll);
 app.get('/registers/name/:name', registers.showByName);
+app.get('/registers/exactname/:name', registers.showByExactName);
 app.get('/registers/namelimited/:name', registers.showByNameLimited);
 app.get('/registers/dni/:dni', registers.showByDNI);
 app.get('/registers/dnilimited/:dni', registers.showByDNILimited);

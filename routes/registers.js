@@ -6,7 +6,7 @@ var bluebird = require('bluebird');
 
 //Mostrar Datos
 /************************************************ */
-//Mostrar todos (limitado a 100 primero registros)
+//Mostrar todos (limitado a 100 primeros registros)
 exports.showAll = function (req, res) {
 
     Register.find({}, function (err, register) {
@@ -31,6 +31,7 @@ exports.showByName = function (req, res) {
         });
     //
 };
+
 //limitado a 5 resultados
 exports.showByNameLimited = function (req, res) {
     console.log(req.params.name);
@@ -44,6 +45,18 @@ exports.showByNameLimited = function (req, res) {
             res.send(register);
             console.log(register);
         }).limit(5);
+    //
+};
+
+//Mostrar por nombre exacto limitado a 10 registros
+exports.showByExactName = function (req, res) {
+    console.log(req.params.name);
+    Register.find({"nombre" : req.params.name},
+        function (err, register) {
+            if (err) throw err;
+            res.send(register);
+            console.log(register);
+        }).limit(10);
     //
 };
 
@@ -94,10 +107,12 @@ exports.exportnamexls = function (req, res) {
     findByName(req.params.name)
         .then(registers => creaExcel(registers, res, req.params.name));
 };
+//Exportar XSL por Nombre Exacto
 function findByName(name) {
     return new Promise(function (resolve, reject) {
         Register.find({
-            $text: {$search: name}
+            "nombre" : name
+            //$text: {$search: name} Exporta registros con coicidencia de nombre
         }, function (err, registers) {
             if (err) {
                 throw err;
@@ -107,6 +122,7 @@ function findByName(name) {
         });
     });
 };
+
 // funcion que crea los XLS
 /*************************** */
 function creaExcel(registers, res, path) {
@@ -150,11 +166,12 @@ function creaExcel(registers, res, path) {
 
         for (i = 0; i <= registers.length; i++) {
             try {
+                // console.log(registers[i]);
                 var arr = [registers[i].dni, registers[i].nombre, registers[i].entrada, registers[i].salida];
                 //console.log("pushing arr to xls", arr);
                 conf.rows.push(arr);
             } catch (error) {
-                console.error("Warning Captured...");
+                console.error(error + " Warning Captured...");
             }
         }
 
