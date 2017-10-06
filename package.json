@@ -19,6 +19,7 @@
     "mongo-xlsx": "^1.0.12",
     "mongoose": "^4.11.13",
     "morgan": "~1.8.1",
+    "ngx-loading": "^1.0.7",
     "serve-favicon": "~2.4.2"
   }
 }
